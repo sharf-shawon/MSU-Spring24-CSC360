@@ -1,0 +1,169 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head></head>
+
+<body>
+    <b>CSC 360/660, Operating Systems <br /><br />
+
+        Project #2: (guish) &quot;Gnu&quot; Shell <br /><br />
+
+        This is a fun project that brings together many concepts already presented in class. Enjoy this project and have
+        fun! <br /></b>
+
+    <div style="border-bottom:solid windowtext .75pt;"> </div>
+
+    <p><b>Objective</b></p>
+
+    <p>The purpose of this assignment is to get everyone up to speed on system programming and to gain some familiarity
+        with the system call interface.&#160; A secondary goal is to use some of the programming tools provided in the
+        UNIX/Linux environment.&#160; In this assignment you are to implement a UNIX/Linux shell program.&#160;
+        A shell is simply a CLI program that conveniently allows you to run other programs.&#160; Read up on your
+        favorite shell (such as bash, csh, tcsh, sh, ...) to see what it does..</p>
+
+
+    <p>&#160;</p>
+    <p><b>Description</b></p>
+    <p><b>Basic Commands:</b>&#160; The input to guish is a sequence of commands, each provided on a separate line of
+        input text (or typed interactively at the keyboard).&#160; The following command must be supported:</p>
+    <ul>
+        <li>
+            <font face="Courier New">progname [args]</font>
+        </li>
+        Example: <br />
+        <font face="Courier New">char * argv[4] = {&quot;ls&quot;, &quot;-l&quot;, &quot;-a&quot;, NULL};</font> <br />
+        <font face="Courier New">execvp(argv[0], argv);</font>
+
+
+    </ul>
+    <p>Runs the program <font face="Courier New">progname</font> with the given, possibly optional, arguments.</p>
+    <ul>
+        <li>
+            <font face="Courier New">exit</font>
+        </li>
+    </ul>
+    <p>The <font face="Courier New">exit</font> internal command causes the shell to exit.&#160; This is the *only* way
+        your shell can exit.&#160; Just prior to your shell exiting, you should print out the number of times each
+        interrupt was
+        detected.</p>
+    <ul>
+        <li>
+            <font face="Courier New">hist</font>
+        </li>
+    </ul>
+    <p>The <font face="Courier New">hist</font> history internal shell command will display the (up to) 10 most recent
+        commands entered from the user.&#160; See details below how this should work.</p>
+    <ul>
+        <li>
+            <font face="Courier New">r n</font>
+        </li>
+    </ul>
+    <p>The <font face="Courier New">r n</font> internal shell command will execute a command from the history
+        list.&#160; See details below how this should work.</p>
+
+
+
+    <p>&#160;</p>
+    <p><b>Handling Erroneous Programs:</b>&#160; Finally, when programs terminate, they return an integer exit code to
+        your shell.&#160; If this code is non-zero,
+        your shell should print the returned value.&#160; For example</p>
+    <p>
+        <font face="Courier New">guish: cp foo bar</font>
+    </p>
+    <p>
+        <font face="Courier New">&#160;&#160;&#160; cp: cannot access foo</font>
+    </p>
+    <p>
+        <font face="Courier New">&#160;&#160;&#160; [ Program returned exit code 1 ]</font>
+    </p>
+    <p>
+        <font face="Courier New">guish:</font>
+    </p>
+    <p>
+    <ol>
+        <li>
+            In case the program doesn&#39;t exist. In the child process: <font face="Courier New">cout &lt;&lt;
+                &quot;The program seems missing. Erro code is: &quot; &lt;&lt; errno &lt;&lt; endl</font>;
+        </li>
+        <li>
+            In case the program returns error. In the parent process: <font face="Courier New">cout &lt;&lt; &quot;The
+                program existed with error: &quot; &lt;&lt; status &lt;&lt; endl;</font>;
+        </li>
+    </ol>
+    </p>
+
+
+    <p>&#160;</p>
+    <p><b>Getting Started</b></p>
+
+    <p>Make sure you understand the assignment before beginning any work.&amp;nbsp.</p>
+    <p>The name of our shell will be called New Shell (guish).&amp;nbsp.</p>
+
+    <p>&#160;</p>
+    <p><b>Other Shell Details</b></p>
+
+    <p>Your shell must support the following:</p>
+
+    <ol>
+        <li>The command exit is an internal shell command.&#160; It will cause your shell program to quit and print the
+            interrupt counts.</li>
+        <li>The ONLY way your program is to exit is via the &#39;exit&#39; command at the prompt.&#160; Therefore your
+            shell will have to trap the appropriate signals.&#160; When your shell
+            &#39;exits&#39; display a list of the signals your shell traps and the number of interrupts of each type.
+            (Ctrl C, Ctrl \, Ctrl Z)</li>
+        <li>The internal shell command &quot;hist&quot; which displays (up to) the ten most recent commands typed into
+            your shell. The hist command will be added to the history.&#160; The commands will
+            always be numbered from 1 to 10.</li>
+        <li>All commands (internal or external, successful or unsuccessful, except r and exit) are added to the history
+            list.</li>
+        <li>The internal shell command &quot;r n&quot; where &#39;n&#39; is the history number of that command in the
+            history list. Also, the user should be able to run the most recent command again by just entering
+            &#39;r&#39;. You can assume that one
+            space will separate the the &#39;r&#39; and the number of the command. Any command that is executed in this
+            fashion should be echoed on the user&#39;s screen and the command is also placed in the history buffer as
+            the next command.&#160;
+            The r command is not added to the history list but the referenced command is added to the history list.</li>
+        <li>Take some creative liberty is designing your shell prompt.&#160; You could include the name of the shell,
+            current working subdirectory, command number, etc. Static prompts will result in loss of points.</li>
+        <li>You must check and correctly handle all return values.&#160; This means that you need to read the man pages
+            for each function to understand what the possible return values are, what errors they indicate, and what you
+            must do when you
+            get that error.</li>
+        <li>You may not use the &quot;system()&quot; system function in your shell.&#160; However, this function call is
+            good for prototyping and
+            debugging.</li>
+    </ol>
+
+
+    <p>&#160;</p>
+    <p><b>Getting Help</b></p>
+
+    <p>You are expected to do your own work and research regarding the usage of various system calls, header files, and
+        libraries.&#160; Information is readily available in the man pages,
+        UNIX reference books, or on the web.&#160; Otherwise, do not hesitate to ask a question if you are unclear about
+        how some part of the assignment is supposed to work.</p>
+
+
+    <script type="module" src="https://s.brightspace.com/lib/bsi/20.24.1-233/unbundled/mathjax.js"></script>
+    <script type="text/javascript">document.addEventListener('DOMContentLoaded', function () {
+            if (document.querySelector('math') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+                document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+                    elm.setAttribute('style', 'display: block; height: 0.5rem;');
+                });
+
+                window.D2L.MathJax.loadMathJax({
+                    'outputScale': 1.5,
+                    'renderLatex': true
+                });
+            }
+        });</script>
+    <script type="module" src="https://s.brightspace.com/lib/bsi/20.24.1-233/unbundled/prism.js"></script>
+    <script type="text/javascript">document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.d2l-code').forEach(code => {
+                window.D2L.Prism.formatCodeElement(code);
+            });
+        });</script>
+</body>
+
+</html>
