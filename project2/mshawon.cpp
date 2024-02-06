@@ -1,3 +1,7 @@
+// CSC360 - Project #2: (guish) "Gnu" Shell
+// Author   : Mohammed Sharfuddin Shawon
+// Date     : 05/02/2024
+
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -7,6 +11,8 @@
 #include <sys/wait.h>
 #include <cstdlib>
 #include <cerrno>
+#include <limits.h>
+#include <regex>
 
 using namespace std;
 
@@ -19,6 +25,7 @@ void showLogo(bool showHelpText = true)
     cout << "| '_ ` _ \\ / __|| '_ \\  / _` |\\ \\ /\\ / / / _ \\ | '_ \\ " << endl;
     cout << "| | | | | |\\__ \\| | | || (_| | \\ V  V / | (_) || | | |" << endl;
     cout << "|_| |_| |_||___/|_| |_| \\__,_|  \\_/\\_/   \\___/ |_| |_|" << endl;
+    cout << "                         By Mohammed Sharfuddin Shawon" << endl;
     cout << endl;
     if (showHelpText)
         cout << "Enter \"help\" to learn more." << endl;
@@ -58,7 +65,17 @@ void parse_args(string line, vector<string> &cmds)
         cmds.push_back(token);
     }
 }
-
+string formatCWD()
+{
+    string home = getenv("HOME");
+    char full_path[PATH_MAX];
+    if (getcwd(full_path, sizeof(full_path)) == NULL)
+    {
+        perror("getcwd() error");
+        return "getcwd() error";
+    }
+    return regex_replace(full_path, std::regex(home), "~");
+}
 int main(void)
 {
     const int historySize = 10;
@@ -67,7 +84,7 @@ int main(void)
     while (1)
     {
         // prompt
-        cout << "mshawon$ ";
+        cout << "msh:" << formatCWD() << "$ ";
 
         string cmd;
         getline(cin, cmd);
@@ -138,6 +155,7 @@ int main(void)
                     if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
                     {
                         cout << "The program existed with error: " << WEXITSTATUS(status) << endl;
+                        exit(0); // Exiting out of the child process. This solves "multiple exit command needed to exit the shell" issue
                     }
                 }
                 continue; // Skip the rest of the loop and prompt again
@@ -180,6 +198,7 @@ int main(void)
 
             // If execvp fails, print an error message
             cerr << "The program seems missing. Error code is: " << errno << endl;
+            exit(0); // Exiting out of the child process. This solves "multiple exit command needed to exit the shell" issue
         }
         else
         {
